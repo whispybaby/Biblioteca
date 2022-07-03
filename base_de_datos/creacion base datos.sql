@@ -79,16 +79,32 @@ CREATE TABLE IF NOT EXISTS libro_autor(
     FOREIGN KEY (fk_libro) REFERENCES libro (id_libro)
 );
 
+CREATE TABLE IF NOT EXISTS multa(
+    id_multa INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    valor INT UNSIGNED,
+    PRIMARY KEY (id_multa)
+);
+
+CREATE TABLE IF NOT EXISTS plazo_extra(
+    id_plazo_extra INT UNSIGNED AUTO_INCREMENT NOT NULL,
+    plazos_solicitados INT NOT NULL,
+    veces_extendido INT NOT NULL,
+    PRIMARY KEY (id_plazo_extra)
+);
+
 CREATE TABLE IF NOT EXISTS prestamo(
     id_prestamo INT UNSIGNED AUTO_INCREMENT NOT NULL,
     fk_copia INT UNSIGNED NOT NULL,
     fk_usuario INT UNSIGNED NOT NULL,
+    fk_multa INT UNSIGNED,
+    fk_plazo_extra INT UNSIGNED,
     fecha_prestamo DATE NOT NULL,
     fecha_entrega DATE,
-    multa INT UNSIGNED,
     PRIMARY KEY (id_prestamo),
     FOREIGN KEY (fk_usuario) REFERENCES usuario (id_usuario),
-    FOREIGN KEY (fk_copia) REFERENCES copia (id_copia)
+    FOREIGN KEY (fk_copia) REFERENCES copia (id_copia),
+    FOREIGN KEY (fk_multa) REFERENCES multa (id_multa),
+    FOREIGN KEY (fk_plazo_extra) REFERENCES plazo_extra(id_plazo_extra)
 );
 
 CREATE TABLE IF NOT EXISTS libro_categoria(
