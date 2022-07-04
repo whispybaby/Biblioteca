@@ -11,6 +11,26 @@ PROCEDIMIENTO:BEGIN
     DECLARE _id_multa INT UNSIGNED;
 
 
+    -- Verificar que existe el préstamo
+    IF
+    (
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                prestamo
+            WHERE
+                id_prestamo = _id_prestamo
+        ) = 0
+    ) THEN
+        SELECT
+            CONCAT('No existe el préstamo con id ', _id_prestamo)
+        AS
+            'Mensaje';
+
+        LEAVE PROCEDIMIENTO;
+    END IF;
+
     -- Obtener la fecha del préstamo
     SELECT
         fecha_prestamo
