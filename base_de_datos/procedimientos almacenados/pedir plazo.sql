@@ -7,8 +7,6 @@ CREATE PROCEDURE sp_plazo_extra
 PROCEDIMIENTO:BEGIN
     DECLARE _id_usuario INT UNSIGNED;
     DECLARE _id_plazo_extra INT UNSIGNED;
-    DECLARE _dias_extra INT UNSIGNED;
-    DECLARE _id_veces_extendido INT UNSIGNED;
 
     -- Verificar que existe el préstamo
     IF
@@ -114,8 +112,8 @@ PROCEDIMIENTO:BEGIN
             )
         VALUES
             (
-                3, -- No hace falta usar variables porque el plazo invalida los
-                1 -- demás, esto no se volverá a cambiar para un estudiante.
+                3,
+                1
             );
 
         SELECT
@@ -148,11 +146,85 @@ PROCEDIMIENTO:BEGIN
                     prestamo.id_prestamo = _id_prestamo
             ) = 2
         ) THEN
+
         -- Docente
-        SELECT
-            'Docente'
-        AS
-            'Mensaje';
+        IF
+        (
+            (
+                SELECT
+                    COUNT(*)
+                FROM
+                    prestamo
+                WHERE
+                    id_prestamo = _id_prestamo
+                AND
+                    fk_plazo_extra IS NOT NULL
+            ) = 1
+        ) THEN
+
+            -- Actualizar el plazo extra
+            SELECT
+                fk_plazo_extra
+            INTO
+                _id_plazo_extra
+            FROM
+                prestamo
+            WHERE
+                id_prestamo = _id_prestamo;
+
+            IF
+            (
+                (
+                    SELECT
+                        veces_extendido
+                    FROM
+                        plazo_extra
+                    WHERE
+                        id_plazo_extra = _id_plazo_extra
+                ) >= 3
+            ) THEN
+                SELECT
+                    'No se puede renovar el préstamo más de 3 veces'
+                AS
+                    'Mensaje';
+                LEAVE PROCEDIMIENTO;
+            END IF;
+
+            UPDATE
+                plazo_extra
+            SET
+                dias_extra = dias_extra + 3,
+                veces_extendido = veces_extendido + 1
+            WHERE
+                id_plazo_extra = _id_plazo_extra;
+
+        ELSE
+            -- Crear el plazo extra
+            INSERT INTO
+                plazo_extra
+                (
+                    dias_extra,
+                    veces_extendido
+                )
+            VALUES
+                (
+                    3,
+                    1
+                );
+
+            SELECT
+                LAST_INSERT_ID()
+            INTO
+                _id_plazo_extra;
+
+            UPDATE
+                prestamo
+            SET
+                fk_plazo_extra = _id_plazo_extra
+            WHERE
+                id_prestamo = _id_prestamo;
+
+        END IF;
     ELSE
         -- Nunca deberíamos llegar aquí, pero si pasa cerramos el proceso
         SELECT
