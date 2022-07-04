@@ -81,13 +81,14 @@ CREATE TABLE IF NOT EXISTS libro_autor(
 
 CREATE TABLE IF NOT EXISTS multa(
     id_multa INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    valor INT UNSIGNED,
+    valor INT UNSIGNED NOT NULL,
+    valor_cancelado INT UNSIGNED DEFAULT 0,
     PRIMARY KEY (id_multa)
 );
 
 CREATE TABLE IF NOT EXISTS plazo_extra(
     id_plazo_extra INT UNSIGNED AUTO_INCREMENT NOT NULL,
-    plazos_solicitados INT NOT NULL,
+    dias_extra INT NOT NULL,
     veces_extendido INT NOT NULL,
     PRIMARY KEY (id_plazo_extra)
 );
