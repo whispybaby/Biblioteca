@@ -58,6 +58,29 @@ PROCEDIMIENTO:BEGIN
         LEAVE PROCEDIMIENTO;
     END IF;
 
+    -- Comprobar las multas del usuario
+    IF
+    (
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                prestamo
+            WHERE
+                fk_usuario = _id_usuario
+            AND
+                fecha_entrega IS NULL
+            AND
+                fk_multa IS NOT NULL
+        ) > 0
+    ) THEN
+        SELECT
+            'El usuario cuenta con multas, no puede pedir plazo extra'
+        AS
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
+    END IF;
+
     -- Determinar el tipo de usuario
     IF (
         (
