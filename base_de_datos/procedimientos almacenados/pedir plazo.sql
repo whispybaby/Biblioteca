@@ -82,7 +82,8 @@ PROCEDIMIENTO:BEGIN
     END IF;
 
     -- Determinar el tipo de usuario
-    IF (
+    IF
+    (
         (
             -- TODO: simplificar esto, ya tenemos el id usuario y no hace falta
             -- más de un join
@@ -151,7 +152,8 @@ PROCEDIMIENTO:BEGIN
         WHERE
             id_prestamo = _id_prestamo;
 
-    ELSEIF (
+    ELSEIF
+        (
             (
                 SELECT
                     tipo_usuario.id_tipo_usuario

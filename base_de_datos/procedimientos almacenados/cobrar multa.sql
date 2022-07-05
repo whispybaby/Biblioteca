@@ -1,6 +1,7 @@
 DROP PROCEDURE IF EXISTS sp_cobrar_multa;
 DELIMITER ||
-CREATE PROCEDURE sp_cobrar_multa(
+CREATE PROCEDURE sp_cobrar_multa
+(
     _id_prestamo INT UNSIGNED
 )
 PROCEDIMIENTO:BEGIN
@@ -49,7 +50,6 @@ PROCEDIMIENTO:BEGIN
             CONCAT('No existe el préstamo con id ', _id_prestamo)
         AS
             'Mensaje';
-
         LEAVE PROCEDIMIENTO;
     END IF;
 
@@ -68,7 +68,6 @@ PROCEDIMIENTO:BEGIN
         DATEDIFF(NOW(), _fecha) + 1
     INTO
         _dias_pasados;
-
 
     -- Si hay días de plazo extra los debemos añadir
     IF (
@@ -110,7 +109,8 @@ PROCEDIMIENTO:BEGIN
 
 
     -- Determinar el tipo de usuario
-    IF (
+    IF
+    (
         (
             SELECT
                 tipo_usuario.id_tipo_usuario
@@ -130,26 +130,28 @@ PROCEDIMIENTO:BEGIN
     ) THEN
         -- Estudiante
         SET _dias_disponibles = _dias_disponibles + 7;
-    ELSEIF (
-            (
-                SELECT
-                    tipo_usuario.id_tipo_usuario
-                FROM
-                    tipo_usuario
-                INNER JOIN
-                    usuario
-                ON
-                    tipo_usuario.id_tipo_usuario = usuario.fk_tipo_usuario
-                INNER JOIN
-                    prestamo
-                ON
-                    usuario.id_usuario = prestamo.fk_usuario
-                WHERE
-                    prestamo.id_prestamo = _id_prestamo
-            ) = 2
-        ) THEN
+    ELSEIF
+    (
+        (
+            SELECT
+                tipo_usuario.id_tipo_usuario
+            FROM
+                tipo_usuario
+            INNER JOIN
+                usuario
+            ON
+                tipo_usuario.id_tipo_usuario = usuario.fk_tipo_usuario
+            INNER JOIN
+                prestamo
+            ON
+                usuario.id_usuario = prestamo.fk_usuario
+            WHERE
+                prestamo.id_prestamo = _id_prestamo
+        ) = 2
+    ) THEN
         -- Docente
-        SET _dias_disponibles = _dias_disponibles + 20;
+        SET
+            _dias_disponibles = _dias_disponibles + 20;
     ELSE
         -- Nunca deberíamos llegar aquí, pero si pasa cerramos el proceso
         SELECT
@@ -159,20 +161,22 @@ PROCEDIMIENTO:BEGIN
         LEAVE PROCEDIMIENTO;
     END IF;
 
-
     -- Comprobamos si ya pasaron los días de préstamo totales
-    IF (
+    IF
+    (
         (
             SELECT
                 (_dias_pasados - _dias_disponibles)
         ) >= 1
     ) THEN
         SELECT
-            (_dias_pasados - _dias_disponibles) * 1000 INTO _valor;
-
+            (_dias_pasados - _dias_disponibles) * 1000
+        INTO
+            _valor;
 
         -- Verificar si ya existe la multa o no
-        IF (
+        IF
+        (
             (
                 SELECT
                     COUNT(*)
@@ -186,14 +190,15 @@ PROCEDIMIENTO:BEGIN
         ) THEN
 
             -- Crear la multa y vincular
-            INSERT INTO multa
-            (
-                valor
-            )
+            INSERT INTO
+                multa
+                (
+                    valor
+                )
             VALUES
-            (
-                _valor
-            );
+                (
+                    _valor
+                );
 
             SELECT
                 LAST_INSERT_ID()
@@ -228,7 +233,6 @@ PROCEDIMIENTO:BEGIN
                 valor = _valor
             WHERE
                 id_multa = _id_multa;
-
         END IF;
 
     ELSE

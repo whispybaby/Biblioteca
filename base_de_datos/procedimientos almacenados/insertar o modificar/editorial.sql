@@ -1,37 +1,50 @@
+DROP PROCEDURE IF EXISTS sp_insertar_modificar_editorial;
 DELIMITER ||
-CREATE PROCEDURE sp_insertar_modificar_editorial(
-    IN _id_editorial INT UNSIGNED,
-    IN _nombre VARCHAR(20),
-    IN _correo VARCHAR(45),
-    IN _telefono VARCHAR(25),
-    IN _fecha_fundacion DATE
+CREATE PROCEDURE sp_insertar_modificar_editorial
+(
+    _id_editorial INT UNSIGNED,
+    _nombre VARCHAR(20),
+    _correo VARCHAR(45),
+    _telefono VARCHAR(25),
+    _fecha_fundacion DATE
 )
 PROCEDIMIENTO:BEGIN
-IF (
+IF
+(
     (
-        SELECT COUNT(*)
-        FROM editorial
-        WHERE id_editorial = _id_editorial
+        SELECT
+            COUNT(*)
+        FROM
+            editorial
+        WHERE
+            id_editorial = _id_editorial
     ) = 0
 ) THEN
-    INSERT INTO editorial(
-        nombre,
-        correo,
-        telefono,
-        fecha_fundacion
-    ) VALUES (
-        _nombre,
-        _correo,
-        _telefono,
-        _fecha_fundacion
-    );
+    INSERT INTO
+        editorial
+        (
+            nombre,
+            correo,
+            telefono,
+            fecha_fundacion
+        )
+    VALUES
+        (
+            _nombre,
+            _correo,
+            _telefono,
+            _fecha_fundacion
+        );
 ELSE
-    UPDATE editorial
-    SET nombre = _nombre,
+    UPDATE
+        editorial
+    SET
+        nombre = _nombre,
         correo = _correo,
         telefono = _telefono,
         fecha_fundacion = _fecha_fundacion
-    WHERE id_editorial = _id_editorial;
+    WHERE
+        id_editorial = _id_editorial;
 END IF;
 END ||
 DELIMITER ;
