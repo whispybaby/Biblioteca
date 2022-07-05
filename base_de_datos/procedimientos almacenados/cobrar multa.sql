@@ -6,9 +6,11 @@ CREATE PROCEDURE sp_cobrar_multa(
 PROCEDIMIENTO:BEGIN
     DECLARE _fecha DATE;
     DECLARE _dias_disponibles INT DEFAULT 0;
+    DECLARE _dias_extra INT DEFAULT 0;
     DECLARE _dias_pasados INT DEFAULT 0;
     DECLARE _valor INT UNSIGNED;
     DECLARE _id_multa INT UNSIGNED;
+    DECLARE _id_plazo_extra INT UNSIGNED;
 
 
     -- Verificar que existe el préstamo
@@ -61,10 +63,29 @@ PROCEDIMIENTO:BEGIN
                 fk_plazo_extra IS NOT NULL
         ) = 1
     ) THEN
+        -- Obtener el código del préstamo para luego obtener los días extra
         SELECT
-            'Hay días extra, falta considerarlos'
-        AS
-            'Mensaje';
+            fk_plazo_extra
+        INTO
+            _id_plazo_extra
+        FROM
+            prestamo
+        WHERE
+            id_prestamo = _id_prestamo;
+
+        -- Obtener días extra
+        SELECT
+            dias_extra
+        INTO
+            _dias_extra
+        FROM
+            plazo_extra
+        WHERE
+            id_plazo_extra = _id_plazo_extra;
+
+        -- Sumar días extra
+        SET
+            _dias_disponibles = _dias_disponibles + _dias_extra;
     END IF;
 
 
