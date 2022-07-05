@@ -12,6 +12,26 @@ PROCEDIMIENTO:BEGIN
     DECLARE _id_multa INT UNSIGNED;
     DECLARE _id_plazo_extra INT UNSIGNED;
 
+    -- Comprobar si el préstamo aún no se devuelve
+    IF
+    (
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                prestamo
+            WHERE
+                id_prestamo = _id_prestamo
+            AND
+                fecha_entrega IS NOT NULL
+        ) = 1
+    ) THEN
+        SELECT
+            'Ese préstamo ya fue devuelto, no hay que considerar multa'
+        AS
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
+    END IF;
 
     -- Verificar que existe el préstamo
     IF
@@ -45,7 +65,7 @@ PROCEDIMIENTO:BEGIN
 
     -- Calcular los días que han pasado desde el préstamo
     SELECT
-        DATEDIFF(NOW(), _fecha)
+        DATEDIFF(NOW(), _fecha) + 1
     INTO
         _dias_pasados;
 
