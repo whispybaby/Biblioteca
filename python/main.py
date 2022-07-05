@@ -1,6 +1,3 @@
-from asyncio.format_helpers import extract_stack
-
-
 print("Sistema de busqueda de libros porfavor introduce la operacion que deceas realizar")
 n1 = float(input("Introduce la operacion que deceas realizar:") )
 n2 = float(input("Desea realizar otra operacion?): ") )
@@ -15,6 +12,7 @@ while True:
     5)Devolucion de libro
     6)Actividades extra                                               
     7)Pagar multa
+    8)
     """)
     opcion = int(input("Elige una opción: ") )     
 
