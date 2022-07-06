@@ -7,6 +7,7 @@ CREATE PROCEDURE sp_plazo_extra
 PROCEDIMIENTO:BEGIN
     DECLARE _id_usuario INT UNSIGNED;
     DECLARE _id_plazo_extra INT UNSIGNED;
+    DECLARE _plazos_restantes INT UNSIGNED;
 
     -- Verificar que existe el préstamo
     IF
@@ -52,7 +53,7 @@ PROCEDIMIENTO:BEGIN
         ) = 1
     ) THEN
         SELECT
-            'Esa copia ya fue devuelta'
+            CONCAT('Ya fue devuelto el préstamo con id ', _id_prestamo)
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -152,6 +153,12 @@ PROCEDIMIENTO:BEGIN
         WHERE
             id_prestamo = _id_prestamo;
 
+        SELECT
+            CONCAT('Se asignó un plazo extra al préstamo con id ', _id_prestamo)
+        AS
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
+
     ELSEIF
         (
             (
@@ -223,6 +230,41 @@ PROCEDIMIENTO:BEGIN
             WHERE
                 id_plazo_extra = _id_plazo_extra;
 
+            -- Obtener veces restantes
+            SELECT
+                (3 - veces_extendido)
+            INTO
+                _plazos_restantes
+            FROM
+                plazo_extra
+            WHERE
+                id_plazo_extra = _id_plazo_extra;
+
+            IF
+            (
+                _plazos_restantes = 1
+            ) THEN
+                SELECT
+                    CONCAT('Solo se puede pedir plazo extra una vez más en el préstamo con id ', _id_prestamo)
+                AS
+                    'Mensaje';
+                LEAVE PROCEDIMIENTO;
+            ELSEIF
+            (
+                _plazos_restantes > 1
+            ) THEN
+                SELECT
+                    CONCAT('Se puede pedir plazo extra ', CONCAT(_plazos_restantes, ' veces más del préstamo con id ', _id_prestamo))
+                AS
+                    'Mensaje';
+                LEAVE PROCEDIMIENTO;
+            ELSE
+                SELECT
+                    CONCAT('Ya no es posible pedir más plazos extra en el préstamo con id ', _id_prestamo)
+                AS
+                    'Mensaje';
+            END IF;
+
         ELSE
             -- Crear el plazo extra
             INSERT INTO
@@ -248,6 +290,12 @@ PROCEDIMIENTO:BEGIN
                 fk_plazo_extra = _id_plazo_extra
             WHERE
                 id_prestamo = _id_prestamo;
+
+            SELECT
+                CONCAT('Se asignó un plazo extra al préstamo con id ', CONCAT(_id_prestamo, ', dos plazos más pueden ser solicitados'))
+            AS
+                'Mensaje';
+            LEAVE PROCEDIMIENTO;
 
         END IF;
     ELSE
