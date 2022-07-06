@@ -90,7 +90,7 @@ PROCEDIMIENTO:BEGIN
             _valor_restante > 0
         ) THEN
             SELECT
-                CONCAT('No se puede devolver, falta pagar la multa de ', _valor_restante)
+                CONCAT('No se puede devolver, falta pagar multa de $', _valor_restante)
             AS
                 'Mensaje';
             LEAVE PROCEDIMIENTO;
