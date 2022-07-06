@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_cobrar_multa;
-DELIMITER ||
+DELIMITER $
 CREATE PROCEDURE sp_cobrar_multa
 (
     _id_prestamo INT UNSIGNED
@@ -267,5 +267,5 @@ PROCEDIMIENTO:BEGIN
         END IF;
     END IF;
 
-END ||
+END $
 DELIMITER ;

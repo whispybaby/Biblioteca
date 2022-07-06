@@ -1,6 +1,6 @@
-DROP PROCEDURE IF EXISTS sp_prestar_copia;
-DELIMITER ||
-CREATE PROCEDURE sp_prestar_copia(
+DROP PROCEDURE IF EXISTS sp_realizar_prestamo;
+DELIMITER $
+CREATE PROCEDURE sp_realizar_prestamo(
     _id_copia INT UNSIGNED,
     _id_usuario INT UNSIGNED
 )
@@ -347,5 +347,5 @@ PROCEDIMIENTO:BEGIN
             'Mensaje';
         LEAVE PROCEDIMIENTO;
     END IF;
-END ||
+END $
 DELIMITER ;

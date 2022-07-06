@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_devolver_prestamo;
-DELIMITER ||
+DELIMITER $
 CREATE PROCEDURE sp_devolver_prestamo
 (
     _id_prestamo INT UNSIGNED
@@ -128,5 +128,5 @@ PROCEDIMIENTO:BEGIN
     AS
         'Mensaje';
 
-END ||
+END $
 DELIMITER ;

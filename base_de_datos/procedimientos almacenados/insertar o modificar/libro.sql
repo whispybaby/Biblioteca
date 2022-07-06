@@ -1,4 +1,4 @@
-DELIMITER ||
+DELIMITER $
 CREATE PROCEDURE sp_insertar_modificar_libro(
     _id_libro INT UNSIGNED,
     _titulo VARCHAR(30),
@@ -40,5 +40,5 @@ ELSE
     WHERE
         id_libro = _id_libro;
 END IF;
-END ||
+END $
 DELIMITER ;

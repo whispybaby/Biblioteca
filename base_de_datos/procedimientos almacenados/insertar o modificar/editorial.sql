@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_insertar_modificar_editorial;
-DELIMITER ||
+DELIMITER $
 CREATE PROCEDURE sp_insertar_modificar_editorial
 (
     _id_editorial INT UNSIGNED,
@@ -46,5 +46,5 @@ ELSE
     WHERE
         id_editorial = _id_editorial;
 END IF;
-END ||
+END $
 DELIMITER ;

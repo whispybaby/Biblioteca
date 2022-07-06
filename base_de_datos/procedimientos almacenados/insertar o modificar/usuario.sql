@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_insertar_modificar_usuario;
-DELIMITER ||
+DELIMITER $
 CREATE PROCEDURE sp_insertar_modificar_usuario
 (
     _id_usuario INT UNSIGNED,
@@ -42,5 +42,5 @@ ELSE
     WHERE
         id_usuario = _id_usuario;
 END IF;
-END ||
+END $
 DELIMITER ;

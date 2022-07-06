@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_buscar_copia;
-DELIMITER ||
+DELIMITER $
 CREATE PROCEDURE sp_buscar_copia
 (
     _id_libro INT UNSIGNED
@@ -74,5 +74,5 @@ PROCEDIMIENTO:BEGIN
         'Está disponible la copia con id ' || _id_copia
     AS
         'Mensaje';
-END ||
+END $
 DELIMITER ;

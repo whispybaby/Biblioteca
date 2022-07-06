@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS sp_pagar_multa;
-DELIMITER ||
+DELIMITER $
 CREATE PROCEDURE sp_pagar_multa
 (
     _id_prestamo INT UNSIGNED,
@@ -124,5 +124,5 @@ PROCEDIMIENTO:BEGIN
             'Mensaje';
     END IF;
 
-END ||
+END $
 DELIMITER ;
