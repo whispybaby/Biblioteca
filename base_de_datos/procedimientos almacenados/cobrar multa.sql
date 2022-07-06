@@ -13,6 +13,25 @@ PROCEDIMIENTO:BEGIN
     DECLARE _id_multa INT UNSIGNED;
     DECLARE _id_plazo_extra INT UNSIGNED;
 
+    -- Verificar que existe el préstamo
+    IF
+    (
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                prestamo
+            WHERE
+                id_prestamo = _id_prestamo
+        ) = 0
+    ) THEN
+        SELECT
+            CONCAT('No existe el préstamo con id ', _id_prestamo)
+        AS
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
+    END IF;
+
     -- Comprobar si el préstamo aún no se devuelve
     IF
     (
@@ -29,25 +48,6 @@ PROCEDIMIENTO:BEGIN
     ) THEN
         SELECT
             'Ese préstamo ya fue devuelto, no hay que considerar multa'
-        AS
-            'Mensaje';
-        LEAVE PROCEDIMIENTO;
-    END IF;
-
-    -- Verificar que existe el préstamo
-    IF
-    (
-        (
-            SELECT
-                COUNT(*)
-            FROM
-                prestamo
-            WHERE
-                id_prestamo = _id_prestamo
-        ) = 0
-    ) THEN
-        SELECT
-            CONCAT('No existe el préstamo con id ', _id_prestamo)
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -82,7 +82,7 @@ PROCEDIMIENTO:BEGIN
                 fk_plazo_extra IS NOT NULL
         ) = 1
     ) THEN
-        -- Obtener el código del préstamo para luego obtener los días extra
+        -- Obtener el código del plazo extra para luego obtener los días extra
         SELECT
             fk_plazo_extra
         INTO
@@ -106,7 +106,6 @@ PROCEDIMIENTO:BEGIN
         SET
             _dias_disponibles = _dias_disponibles + _dias_extra;
     END IF;
-
 
     -- Determinar el tipo de usuario
     IF
@@ -211,6 +210,12 @@ PROCEDIMIENTO:BEGIN
                 fk_multa = _id_multa
             WHERE
                 id_prestamo = _id_prestamo;
+
+            -- Indicar registro de multa
+            SELECT
+                CONCAT('Se registró una multa por $', _valor)
+            AS
+                'Mensaje';
         ELSE
 
             -- Actualizar la multa existente
@@ -233,9 +238,16 @@ PROCEDIMIENTO:BEGIN
                 valor = _valor
             WHERE
                 id_multa = _id_multa;
+
+            -- Mensaje con nuevo valor de la multa
+            SELECT
+                CONCAT('La multa ahora es de $' _valor)
+            AS
+                'Mensaje';
         END IF;
 
     ELSE
+        -- Aún no se debe cobrar multa
         SELECT
             CONCAT('Aún queda(n) ', CONCAT(-(SELECT _dias_pasados - _dias_disponibles), ' día(s) de préstamo.'))
         AS
