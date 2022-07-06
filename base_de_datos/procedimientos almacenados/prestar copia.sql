@@ -8,6 +8,27 @@ PROCEDIMIENTO:BEGIN
     DECLARE _idx INT UNSIGNED DEFAULT 0;
     DECLARE _id_libro INT UNSIGNED;
     DECLARE _total_prestamos_usuario INT UNSIGNED;
+    DECLARE _multas_sin_pagar INT UNSIGNED;
+    DECLARE _prestamos_sin_devolver INT UNSIGNED;
+
+    -- Comprobar si existe la copia
+    IF
+    (
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                copia
+            WHERE
+                id_copia = _id_copia
+        ) = 0
+    ) THEN
+        SELECT
+            CONCAT('No existe la copia con id ', _id_copia)
+        AS
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
+    END IF;
 
     -- No se puede prestar la misma copia
     IF
@@ -24,9 +45,9 @@ PROCEDIMIENTO:BEGIN
         ) >= 1
     ) THEN
         SELECT
-            'Esa copia ya está en préstamo'
+            CONCAT('La copia con id ', CONCAT(_id_copia, ' ya está en préstamo'))
         AS
-            'Respuesta';
+            'Mensaje';
         LEAVE PROCEDIMIENTO;
     END IF;
 
@@ -93,7 +114,7 @@ PROCEDIMIENTO:BEGIN
         )
         THEN
             SELECT
-                'La copia es de un libro ya pedido'
+                CONCAT('La copia con id ', CONCAT(_id_copia, ' es de un libro que ya solicitó'))
             AS
                 'Mensaje';
             LEAVE PROCEDIMIENTO;
@@ -101,6 +122,10 @@ PROCEDIMIENTO:BEGIN
         SET
             _idx = _idx + 1;
     END WHILE;
+
+    -- Para volver a usarlo después
+    SET
+        _idx = 0;
 
     -- Debe ser un usuario válido
     IF
@@ -115,104 +140,212 @@ PROCEDIMIENTO:BEGIN
         ) != 1
     ) THEN
         SELECT
-            'No existe el usuario'
+            CONCAT('No hay ningún usuario con id ', _id_usuario)
         AS
-            'Respuesta';
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
+    END IF;
 
-    ELSE
+    -- Comprobar si hay multas del usuario
+    IF
+    (
+        (
+            SELECT
+                COUNT(*)
+            FROM
+                prestamo
+            WHERE
+                fk_usuario = _id_usuario
+            AND
+                fecha_entrega IS NULL
+            AND
+                fk_multa IS NOT NULL
+        ) > 0
+    ) THEN
+        -- Obtener multas sin pagar
+        SELECT
+            COUNT(*)
+        INTO
+            _multas_sin_pagar
+        FROM
+            prestamo
+        INNER JOIN
+            multa
+        ON
+            prestamo.fk_multa = multa.id_multa
+        WHERE
+            fk_usuario = _id_usuario
+        AND
+            prestamo.fecha_entrega IS NULL
+        AND
+            (multa.valor - multa.valor_cancelado) > 0;
+
+        -- Terminar si hay multas sin pagar
+        IF
+        (
+            _multas_sin_pagar = 1
+        ) THEN
+            SELECT
+                'No se puede realizar el préstamo, el usuario cuenta con 1 multa sin pagar'
+            AS
+                'Mensaje';
+            LEAVE PROCEDIMIENTO;
+        ELSEIF
+        (
+            _multas_sin_pagar > 1
+        ) THEN
+            SELECT
+                CONCAT('No se puede realizar el préstamo, el usuario cuenta con ', CONCAT(_multas_sin_pagar, ' multas sin pagar'))
+            AS
+                'Mensaje';
+            LEAVE PROCEDIMIENTO;
+        ELSE
+            -- Obtener préstamos pagados pero sin devolver
+            SELECT
+                COUNT(*)
+            INTO
+                _prestamos_sin_devolver
+            FROM
+                prestamo
+            INNER JOIN
+                multa
+            ON
+                prestamo.fk_multa = multa.id_multa
+            WHERE
+                fk_usuario = 4
+            AND
+                prestamo.fecha_entrega IS NULL
+            AND
+                (multa.valor - multa.valor_cancelado) = 0;
+
+            -- Comprobar si hay préstamos retrasados
+            IF
+            (
+                _prestamos_sin_devolver = 1
+            ) THEN
+                SELECT
+                    'El usuario cuenta con 1 préstamo sin devolver'
+                AS
+                    'Mensaje';
+                LEAVE PROCEDIMIENTO;
+            ELSEIF
+            (
+                _prestamos_sin_devolver > 1
+            ) THEN
+                SELECT
+                    CONCAT('El usuario cuenta con ', CONCAT(_prestamos_sin_devolver, ' préstamos sin devolver'))
+                AS
+                    'Mensaje';
+                LEAVE PROCEDIMIENTO;
+            END IF;
+        END IF;
+    END IF;
+
+    -- Determinar tipo usuario
+    IF
+    (
+        (
+            SELECT
+                fk_tipo_usuario
+            FROM
+                usuario
+            WHERE
+                id_usuario = _id_usuario
+        ) = 1
+    ) THEN
+
+        -- No puede tener más de 4 préstamos
         IF
         (
             (
                 SELECT
-                    fk_tipo_usuario
+                    COUNT(*)
                 FROM
-                    usuario
+                    prestamo
                 WHERE
-                    id_usuario = _id_usuario
-            ) = 1
+                    fk_usuario = _id_usuario
+                AND
+                    fecha_entrega IS NULL
+            ) >= 4
         ) THEN
-
-            -- No puede tener más de 4 préstamos
-            IF
-            (
-                (
-                    SELECT
-                        COUNT(*)
-                    FROM
-                        prestamo
-                    WHERE
-                        fk_usuario = _id_usuario
-                    AND
-                        fecha_entrega IS NULL
-                ) >= 4
-            ) THEN
-                SELECT
-                    'Un estudiante no puede pedir más de 4 libros'
-                AS
-                    'Respuesta';
-                LEAVE PROCEDIMIENTO;
-            END IF;
-            -- Ahora podemos insertar
-            INSERT INTO
-                prestamo
-                    (
-                        fk_copia,
-                        fk_usuario,
-                        fecha_prestamo
-                    )
-                VALUES
-                    (
-                        _id_copia,
-                        _id_usuario,
-                        DATE(NOW())
-                    );
-
-            UPDATE
-                copia
-            SET
-                fk_estado = 2
-            WHERE
-                id_copia = _id_copia;
-
-        ELSEIF (
-            (
-                SELECT
-                    fk_tipo_usuario
-                FROM
-                    usuario
-                WHERE
-                    id_usuario = _id_usuario
-            ) = 2
-        ) THEN
-            -- Ahora podemos insertar
-            INSERT INTO
-                prestamo
-                (
-                    fk_copia,
-                    fk_usuario,
-                    fecha_prestamo
-                )
-            VALUES
-                (
-                    _id_copia,
-                    _id_usuario,
-                    DATE(NOW())
-                );
-
-            UPDATE
-                copia
-            SET
-                fk_estado = 2
-            WHERE
-                id_copia = _id_copia;
-
-        ELSE
             SELECT
-                'El tipo de usuario no es correcto'
+                'Un estudiante no puede tener más de 4 préstamos'
             AS
-                'Respuesta';
+                'Mensaje';
+            LEAVE PROCEDIMIENTO;
         END IF;
 
+        -- Ahora podemos insertar
+        INSERT INTO
+            prestamo
+            (
+                fk_copia,
+                fk_usuario,
+                fecha_prestamo
+            )
+            VALUES
+            (
+                _id_copia,
+                _id_usuario,
+                DATE(NOW())
+            );
+
+        UPDATE
+            copia
+        SET
+            fk_estado = 2
+        WHERE
+            id_copia = _id_copia;
+
+        SELECT
+            CONCAT('Se prestó la copia con id ', CONCAT(_id_copia, CONCAT(' al usuario con id ', _id_usuario)))
+        AS
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
+
+    ELSEIF (
+        (
+            SELECT
+                fk_tipo_usuario
+            FROM
+                usuario
+            WHERE
+                id_usuario = _id_usuario
+        ) = 2
+    ) THEN
+        -- Ahora podemos insertar
+        INSERT INTO
+            prestamo
+            (
+                fk_copia,
+                fk_usuario,
+                fecha_prestamo
+            )
+        VALUES
+            (
+                _id_copia,
+                _id_usuario,
+                DATE(NOW())
+            );
+
+        UPDATE
+            copia
+        SET
+            fk_estado = 2
+        WHERE
+            id_copia = _id_copia;
+
+        SELECT
+            CONCAT('Se prestó la copia con id ', CONCAT(_id_copia, CONCAT(' al usuario con id ', _id_usuario)))
+        AS
+            'Mensaje';
+
+    ELSE
+        SELECT
+            'El tipo de usuario no es correcto'
+        AS
+            'Mensaje';
+        LEAVE PROCEDIMIENTO;
     END IF;
 END ||
 DELIMITER ;
