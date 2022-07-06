@@ -26,7 +26,7 @@ PROCEDIMIENTO:BEGIN
         ) = 0
     ) THEN
         SELECT
-            CONCAT('No existe el préstamo con id ', _id_prestamo)
+            'No existe el préstamo con id ' || _id_prestamo
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -213,7 +213,7 @@ PROCEDIMIENTO:BEGIN
 
             -- Indicar registro de multa
             SELECT
-                CONCAT('Se registró una multa por $', _valor)
+                'Se registró una multa por $' || _valor
             AS
                 'Mensaje';
         ELSE
@@ -241,17 +241,30 @@ PROCEDIMIENTO:BEGIN
 
             -- Mensaje con nuevo valor de la multa
             SELECT
-                CONCAT('La multa ahora es de $' _valor)
+                'La multa ahora es de $' || _valor
             AS
                 'Mensaje';
         END IF;
 
     ELSE
         -- Aún no se debe cobrar multa
-        SELECT
-            CONCAT('Aún queda(n) ', CONCAT(-(SELECT _dias_pasados - _dias_disponibles), ' día(s) de préstamo.'))
-        AS
-            'Mensaje';
+        IF
+        (
+            (
+                SELECT
+                    (- (_dias_pasados - _dias_disponibles)) + 1
+            ) = 1
+        ) THEN
+            SELECT
+                'Aún queda un día de préstamo'
+            AS
+                'Mensaje';
+        ELSE
+            SELECT
+                'Aún quedan ' || (- (_dias_pasados - _dias_disponibles)) + 1 || ' días de préstamo'
+            AS
+                'Mensaje';
+        END IF;
     END IF;
 
 END ||

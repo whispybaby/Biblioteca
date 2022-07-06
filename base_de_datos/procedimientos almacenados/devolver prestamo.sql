@@ -90,7 +90,7 @@ PROCEDIMIENTO:BEGIN
             _valor_restante > 0
         ) THEN
             SELECT
-                CONCAT('No se puede devolver, falta pagar multa de $', _valor_restante)
+                'No se puede devolver, falta pagar multa de $' || _valor_restante
             AS
                 'Mensaje';
             LEAVE PROCEDIMIENTO;
@@ -124,7 +124,7 @@ PROCEDIMIENTO:BEGIN
         id_copia = _id_copia;
 
     SELECT
-        CONCAT('Se ha devuelto el préstamo con id: ', _id_prestamo)
+        'Se ha devuelto es préstamo con id ' || _id_prestamo
     AS
         'Mensaje';
 

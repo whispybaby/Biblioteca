@@ -2,6 +2,8 @@ DROP DATABASE IF EXISTS biblioteca;
 CREATE DATABASE IF NOT EXISTS biblioteca;
 USE biblioteca;
 
+SET sql_mode = (SELECT CONCAT(@@sql_mode, ',PIPES_AS_CONCAT'));
+
 CREATE TABLE IF NOT EXISTS editorial(
     id_editorial INT UNSIGNED AUTO_INCREMENT NOT NULL,
     nombre VARCHAR(20) NOT NULL,

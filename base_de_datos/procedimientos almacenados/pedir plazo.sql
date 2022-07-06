@@ -22,7 +22,7 @@ PROCEDIMIENTO:BEGIN
         ) = 0
     ) THEN
         SELECT
-            CONCAT('No existe el préstamo con id ', _id_prestamo)
+            'No existe el préstamo con id ' || _id_prestamo
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -53,7 +53,7 @@ PROCEDIMIENTO:BEGIN
         ) = 1
     ) THEN
         SELECT
-            CONCAT('Ya fue devuelto el préstamo con id ', _id_prestamo)
+            'Ya fue devuelto el préstamo con id ' || _id_prestamo
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -154,7 +154,7 @@ PROCEDIMIENTO:BEGIN
             id_prestamo = _id_prestamo;
 
         SELECT
-            CONCAT('Se asignó un plazo extra al préstamo con id ', _id_prestamo)
+            'Se asignó un plazo extra al préstamo con id ' || _id_prestamo
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -245,7 +245,7 @@ PROCEDIMIENTO:BEGIN
                 _plazos_restantes = 1
             ) THEN
                 SELECT
-                    CONCAT('Solo se puede pedir plazo extra una vez más en el préstamo con id ', _id_prestamo)
+                    'Solo se puede pedir plazo extra una vez más en el préstamo con id ' || _id_prestamo
                 AS
                     'Mensaje';
                 LEAVE PROCEDIMIENTO;
@@ -254,13 +254,13 @@ PROCEDIMIENTO:BEGIN
                 _plazos_restantes > 1
             ) THEN
                 SELECT
-                    CONCAT('Se puede pedir plazo extra ', CONCAT(_plazos_restantes, ' veces más del préstamo con id ', _id_prestamo))
+                    'Se puede pedir plazo extra ' || _plazos_restantes || ' veces más del préstamo con id ' || _id_prestamo
                 AS
                     'Mensaje';
                 LEAVE PROCEDIMIENTO;
             ELSE
                 SELECT
-                    CONCAT('Ya no es posible pedir más plazos extra en el préstamo con id ', _id_prestamo)
+                    'Ya no es posible pedir más plazos extra en el préstamo con id ' || _id_prestamo
                 AS
                     'Mensaje';
             END IF;
@@ -292,7 +292,7 @@ PROCEDIMIENTO:BEGIN
                 id_prestamo = _id_prestamo;
 
             SELECT
-                CONCAT('Se asignó un plazo extra al préstamo con id ', CONCAT(_id_prestamo, ', dos plazos más pueden ser solicitados'))
+                'Se asignó un plazo extra al préstamo con id ' || _id_prestamo || ', dos plazos más pueden ser solicitados'
             AS
                 'Mensaje';
             LEAVE PROCEDIMIENTO;

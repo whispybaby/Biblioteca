@@ -105,7 +105,7 @@ PROCEDIMIENTO:BEGIN
 
         -- Vuelto restante
         SELECT
-            CONCAT('Multa cancelada, su vuelto es $', _monto_abono - _valor_restante)
+            'Multa cancelada, su vuelto es $' || _monto_abono - _valor_restante
         AS
             'Mensaje';
     ELSE
@@ -119,7 +119,7 @@ PROCEDIMIENTO:BEGIN
 
         -- Indicamos cuanto falta por pagar
         SELECT
-            CONCAT('Abono realizado, falta pagar $', _valor_restante - _monto_abono)
+            'Abono realizado, falta pagar $' || _valor_restante - _monto_abono
         AS
             'Mensaje';
     END IF;

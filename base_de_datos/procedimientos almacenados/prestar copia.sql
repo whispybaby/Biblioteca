@@ -24,7 +24,7 @@ PROCEDIMIENTO:BEGIN
         ) = 0
     ) THEN
         SELECT
-            CONCAT('No existe la copia con id ', _id_copia)
+            'No existe la copia con id ' || _id_copia
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -45,7 +45,7 @@ PROCEDIMIENTO:BEGIN
         ) >= 1
     ) THEN
         SELECT
-            CONCAT('La copia con id ', CONCAT(_id_copia, ' ya está en préstamo'))
+            'La copia con id ' || _id_copia || ' ya está en préstamo'
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -114,7 +114,7 @@ PROCEDIMIENTO:BEGIN
         )
         THEN
             SELECT
-                CONCAT('La copia con id ', CONCAT(_id_copia, ' es de un libro que ya solicitó'))
+                'La copia con id ' || _id_copia || ' es de un libro que ya solicitó'
             AS
                 'Mensaje';
             LEAVE PROCEDIMIENTO;
@@ -140,7 +140,7 @@ PROCEDIMIENTO:BEGIN
         ) != 1
     ) THEN
         SELECT
-            CONCAT('No hay ningún usuario con id ', _id_usuario)
+            'No hay ningún usuario con id ' || _id_usuario
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -195,7 +195,7 @@ PROCEDIMIENTO:BEGIN
             _multas_sin_pagar > 1
         ) THEN
             SELECT
-                CONCAT('No se puede realizar el préstamo, el usuario cuenta con ', CONCAT(_multas_sin_pagar, ' multas sin pagar'))
+                'No se puede realizar el préstamo, el usuario cuenta con ' || _multas_sin_pagar || ' multas sin pagar'
             AS
                 'Mensaje';
             LEAVE PROCEDIMIENTO;
@@ -233,7 +233,7 @@ PROCEDIMIENTO:BEGIN
                 _prestamos_sin_devolver > 1
             ) THEN
                 SELECT
-                    CONCAT('El usuario cuenta con ', CONCAT(_prestamos_sin_devolver, ' préstamos sin devolver'))
+                    'El usuario cuenta con ' || _prestamos_sin_devolver || ' préstamos sin devolver'
                 AS
                     'Mensaje';
                 LEAVE PROCEDIMIENTO;
@@ -298,7 +298,7 @@ PROCEDIMIENTO:BEGIN
             id_copia = _id_copia;
 
         SELECT
-            CONCAT('Se prestó la copia con id ', CONCAT(_id_copia, CONCAT(' al usuario con id ', _id_usuario)))
+            'Se prestó la copia con id ' || _id_copia || ' al usuario con id ' || _id_usuario
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -336,7 +336,7 @@ PROCEDIMIENTO:BEGIN
             id_copia = _id_copia;
 
         SELECT
-            CONCAT('Se prestó la copia con id ', CONCAT(_id_copia, CONCAT(' al usuario con id ', _id_usuario)))
+            'Se prestó la copia con id ' || _id_copia || ' al usuario con id ' || _id_usuario
         AS
             'Mensaje';
 

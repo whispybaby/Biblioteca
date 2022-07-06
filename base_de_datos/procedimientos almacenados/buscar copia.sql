@@ -20,7 +20,7 @@ PROCEDIMIENTO:BEGIN
         ) = 0
     ) THEN
         SELECT
-            CONCAT('No existe ningún libro con id ', _id_libro)
+            'No existe ningún libro con id ' || _id_libro
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -45,7 +45,7 @@ PROCEDIMIENTO:BEGIN
         ) = 0
     ) THEN
         SELECT
-            CONCAT('No hay copias disponibles del libro con id ', _id_libro)
+            'No hay copias disponibles del libro con id ' || _id_libro
         AS
             'Mensaje';
         LEAVE PROCEDIMIENTO;
@@ -71,7 +71,7 @@ PROCEDIMIENTO:BEGIN
 
     -- Indicar qué copia se puede prestar
     SELECT
-        CONCAT('Está disponible la copia con id ', _id_copia)
+        'Está disponible la copia con id ' || _id_copia
     AS
         'Mensaje';
 END ||
