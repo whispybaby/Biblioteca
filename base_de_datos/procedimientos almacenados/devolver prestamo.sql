@@ -123,5 +123,10 @@ PROCEDIMIENTO:BEGIN
     WHERE
         id_copia = _id_copia;
 
+    SELECT
+        CONCAT('Se ha devuelto el préstamo con id: ', _id_prestamo)
+    AS
+        'Mensaje';
+
 END ||
 DELIMITER ;
