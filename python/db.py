@@ -1,3 +1,5 @@
+from subprocess import CalledProcessError, call
+from colorama import Cursor
 import pymysql
 from sys import exit
 
@@ -30,27 +32,50 @@ class ConexionBD:
 
     def sp_plazo_extra(self, id_prestamo):
         try:
-            self.cursor.callproc("sp_plazo_extra", [id_prestamo])
+            self.cursor.callproc(
+                "sp_plazo_extra",[id_prestamo])
+            resultado = self.cursor.fetchone()
+
+            input(f"\n{resultado[0]}")
+
         except:
             pass
 
     def sp_buscar_copia(self, id_libro):
         try:
-            self.cursor.callproc("sp_buscar_copia", [id_libro])
+            self.cursor.callproc(
+                "sp_buscar_copia", [id_libro])
+            resultado = self.cursor.fetchone()
+            input(f"\n{resultado[0]}")
         except:
             pass
 
     def sp_devolver_prestamo(self, id_prestamo):
         try:
-            self.cursor.execute(
-                f"call sp_devolver_prestamo({id_prestamo});")
+            self.cursor.callproc(
+                "sp_devolver_prestamo" , [id_prestamo])
             resultado = self.cursor.fetchone()
-            print(resultado[0])
+            
+            input(f"\n{resultado[0]}")
         except:
             pass
 
     def sp_prestar_copia(self, id_copia, id_usuario):
         try:
-            self.cursor.callproc("sp_prestar_copia", [id_copia, id_usuario])
+            self.cursor.callproc(
+                "sp_prestar_copia", [id_copia, id_usuario])
+            resultado = self.cursor.fetchone()
+
+            input(f"\n{resultado[0]}")
+        except:
+            pass
+    
+    def sp_pagar_multa(self, id_prestamo, monto_abono):
+        try:
+            self.cursor.callproc(
+                "sp_pagar_multa", [id_prestamo, monto_abono])
+            resultado = self.cursor.fetchone()
+
+            input(f"\n{resultado[0]}")
         except:
             pass
