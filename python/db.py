@@ -1,17 +1,19 @@
 import pymysql
 from sys import exit
 
+
 def error(error):
     print(f"{error.args[0]}: {error.args[1]}")
 
+
 class ConexionBD:
-    def __init__(self, host, user, password, db) -> None:
+    def __init__(self, host, user, password, db):
         self.host = host
         self.user = user
         self.password = password
         self.db = db
 
-    def conectar_bd(self) -> str:
+    def conectar_bd(self):
         try:
             self.connection = pymysql.connect(
                 host=self.host,
@@ -37,14 +39,16 @@ class ConexionBD:
             self.cursor.callproc("sp_buscar_copia", [id_libro])
         except:
             pass
-    
+
     def sp_devolver_prestamo(self, id_prestamo):
         try:
-            self.cursor.execute(f"call sp_devolver_prestamo({id_prestamo}))")
+            self.cursor.execute(
+                f"call sp_devolver_prestamo({id_prestamo});")
             resultado = self.cursor.fetchone()
-            print(resultado)
+            print(resultado[0])
         except:
             pass
+
     def sp_prestar_copia(self, id_copia, id_usuario):
         try:
             self.cursor.callproc("sp_prestar_copia", [id_copia, id_usuario])
