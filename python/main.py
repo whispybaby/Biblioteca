@@ -1,75 +1,51 @@
+import db
+biblioteca = db.ConexionBD("localhost","python","python","biblioteca")
 print("Sistema de busqueda de libros porfavor introduce la operacion que deceas realizar")
-n1 = float(input("Introduce la operacion que deceas realizar:") )
-n2 = float(input("Desea realizar otra operacion?): ") )
 
-opcion = 0
-while True:
-    print(""" Porfavor amigo seleciona la actividad principal que deceas realizar ૮ ˶ᵔ ᵕ ᵔ˶ ა
-    1)Admnistracion de libros
-    2)Buscar Libro
-    3)Solicitar plazo extra
-    4)Prestamo de libro
-    5)Devolucion de libro
-    6)Actividades extra                                               
-    7)Pagar multa
-    8)
-    """)
-    opcion = int(input("Elige una opción: ") )     
+def menu():
+    print("1 - Solicitar plazo extra")
+    print("2 - Buscar copia")
+    print("3 - Devolver copia ")
+    print("4 - Prestar copia")
+    print("5 - Salir")
 
-    if opcion == 1:
-        print(" ")
-        print("Administrando libros cargando...: tenemos los siguientes apartados..")
-    elif opcion == 2:
-        print(" ")
-        opcion2 = float (input("Porfavor amigo ingresa el nombre del libro que deceas buscar:           "))
-        if opcion2 == 2:
-             print("Buscando libro ...: resultado ")
-    elif opcion == 3:
-        print(" ")
-        opcion3 = float (input("Porfavor amigo ingresa el nombre del libro que deceas solicitar:           "))
-        if opcion3 == 3:
-             print("Solicitando libro ...: resultado ")
-    elif opcion == 4:
-        print(" ")
-        opcion4 = float (input("Porfavor amigo ingresa el prestamo que deceas investigar:           "))
-        if opcion4 == 4:
-             print("Investigando prestamo ...: resultado ")
-    elif opcion == 5:
-        print(" ")
-        opcion5 = float (input("Porfavor amigo ingresa el libro que deceas devolver:           "))
-        if opcion4 == 4:
-             print("devolciendo libro...: resultado ")
-    elif opcion == 6:
-        print("""
-             Menu de actividades extra
-             1)
-             2)
-             3)
-             4)
-             5)
-             6)
-             7""")
-        opcion6 = float (input("Porfavor amigo ingresa las actividades extra de las cuales quieres realizar :           "))
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-        if opcion6 == 6:
-             print("Investigando prestamo ...: resultado ")
-    elif opcion == 7:
-        print("")
-        opcion7 = float (input("Porfavor amigo ingresa la multa que deceas pagar:           "))
-    elif opcion == 8:
-        break
-    else:
-        print("Opción incorrecta")
+estado = True
+while(estado):
+     menu()
+     opcion = input("\n")
+
+    # Plazo extra
+     if opcion == "1":
+          print("\nSolicitar plazo extra. ")
+          id_prestamo=input("Porfavor ingrese el id del prestamo:     ")
+          biblioteca.sp_plazo_extra(id_prestamo)
+
+    # Buscar copia
+     elif opcion == "2":
+          print("\nBuscar copia.")
+          id_copia=input("Ingrese el id de la copia:     ")
+          biblioteca.sp_buscar_copia()
+
+    # Devolver prestamo
+     elif opcion == "3":
+          print("\nDevolver prestamo.")
+          id_prestamo=int(input("Ingrese el id del prestamo:      "))
+          biblioteca.sp_devolver_prestamo(id_prestamo)
+    
+    #Prestar copia
+     elif opcion == "4":
+          print("\nPrestar copia.")
+          copia = input("Copia: ")
+          biblioteca.sp_prestar_copia()
+     
+     #Pagar multa
+     elif opcion == "5":
+          print("\nPagar multa. ")
+          biblioteca.sp_pagar_multa()
+    # Salir
+     elif opcion == "5":
+          estado = False
+          print("\nSaliendo...")
+
+     else:
+          print("\nOpción no válida.")

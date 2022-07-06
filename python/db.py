@@ -28,23 +28,25 @@ class ConexionBD:
 
     def sp_plazo_extra(self, id_prestamo):
         try:
-            self.cursor.callproc("sp_plazo_extra")
+            self.cursor.callproc("sp_plazo_extra", [id_prestamo])
         except:
             pass
 
     def sp_buscar_copia(self, id_libro):
         try:
-            self.cursor.callproc("sp_buscar_copia")
+            self.cursor.callproc("sp_buscar_copia", [id_libro])
         except:
             pass
     
-    def sp_devolver_copia(self, id_copia, id_prestamo):
+    def sp_devolver_prestamo(self, id_prestamo):
         try:
-            self.cursor.callproc("sp_devolver_copia")
+            self.cursor.execute(f"call sp_devolver_prestamo({id_prestamo}))")
+            resultado = self.cursor.fetchone()
+            print(resultado)
         except:
             pass
     def sp_prestar_copia(self, id_copia, id_usuario):
         try:
-            self.cursor.callproc("sp_prestar_copia")
+            self.cursor.callproc("sp_prestar_copia", [id_copia, id_usuario])
         except:
             pass
