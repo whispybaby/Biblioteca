@@ -1,4 +1,5 @@
 import db
+import datetime
 
 
 def main():
@@ -103,7 +104,7 @@ def main():
                 if monto_abono < 0:
                     raise ValueError
             except ValueError:
-                print('\nEl monto a abonar debe ser positivo')
+                print('\nEl monto a abonar debe ser positivo.')
                 continue
 
             biblioteca.sp_pagar_multa(id_prestamo, monto_abono)
@@ -116,44 +117,254 @@ def main():
 
             # Autor
             if opcion_añadir_modificar == '1':
-                id_autor = input('\nId autor:            ')
-                nombre = input('Nombre:              ')
-                apellido = input('Apellido:            ')
-                fecha_nacimiento = input('Fecha de nacimiento: ')
-                biblioteca.sp_insertar_modificar_autor(id_autor, nombre, apellido, fecha_nacimiento)
+                id_autor = input('\nId autor:       ')
+                try:
+                    id_autor = int(id_autor)
+                    if id_autor <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl id debe ser un número positivo.')
+                    continue
 
-                print('\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
+                nombre = input('Nombre:         ')
+                try:
+                    if len(nombre) > 30:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl nombre no puede ser más largo de 30 carácteres.')
+                    continue
+
+                apellido = input('Apellido:       ')
+                try:
+                    if len(apellido) > 30:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl apellido no puede ser más largo de 30 carácteres.')
+                    continue
+
+                año_nacimiento = input('Año nacimiento: ')
+                try:
+                    año_nacimiento = int(año_nacimiento)
+                    if año_nacimiento <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl año debe ser un número positivo.')
+                    continue
+
+                mes_nacimiento = input('Mes nacimiento: ')
+                try:
+                    mes_nacimiento = int(mes_nacimiento)
+                    if mes_nacimiento > 12 or mes_nacimiento < 1:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl mes debe ser un número entre 1 y 12.')
+                    continue
+
+                dia_nacimiento = input('Día nacimiento: ')
+                try:
+                    dia_nacimiento = int(dia_nacimiento)
+                    if dia_nacimiento > 31 or dia_nacimiento < 1:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl día debe ser un número entre 1 y 31.')
+                    continue
+
+                try:
+                    fecha_nacimiento = datetime.datetime(
+                        año_nacimiento, mes_nacimiento, dia_nacimiento)
+                except ValueError:
+                    print('\nNo es una fecha válida.')
+                    continue
+
+                biblioteca.sp_insertar_modificar_autor(
+                    id_autor, nombre, apellido, fecha_nacimiento)
+
+                print(
+                    '\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
 
             # Editorial
             elif opcion_añadir_modificar == '2':
-                id_editorial = input('\nId editorial:    ')
-                nombre = input('Nombre:          ')
-                correo = input('Correo:          ')
-                telefono = input('Teléfono:        ')
-                fecha_fundacion = input('Fecha fundación: ')
-                biblioteca.sp_insertar_modificar_editorial(id_editorial, nombre, correo, telefono, fecha_fundacion)
+                id_editorial = input('\nId editorial:  ')
+                try:
+                    id_editorial = int(id_editorial)
+                    if id_editorial <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl id debe ser un número positivo.')
+                    continue
 
-                print('\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
+                nombre = input('Nombre:        ')
+                try:
+                    if len(nombre) > 20:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl nombre no puede ser más largo de 20 carácteres.')
+                    continue
+
+                correo = input('Correo:        ')
+                try:
+                    if len(correo) > 45:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl correo no puede ser más largo de 45 carácteres.')
+                    continue
+
+                telefono = input('Teléfono:      ')
+                try:
+                    if len(telefono) > 25:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl telefono no puede ser más largo de 25 carácteres.')
+                    continue
+
+                año_fundacion = input('Año fundacion: ')
+                try:
+                    año_fundacion = int(año_fundacion)
+                    if año_fundacion <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl año debe ser un número positivo.')
+                    continue
+
+                mes_fundacion = input('Mes fundacion: ')
+                try:
+                    mes_fundacion = int(mes_fundacion)
+                    if mes_fundacion > 12 or mes_fundacion < 1:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl mes debe ser un número entre 1 y 12.')
+                    continue
+
+                dia_fundacion = input('Día fundacion: ')
+                try:
+                    dia_fundacion = int(dia_fundacion)
+                    if dia_fundacion > 31 or dia_fundacion < 1:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl día debe ser un número entre 1 y 31.')
+                    continue
+
+                try:
+                    fecha_fundacion = datetime.datetime(
+                        año_fundacion, mes_fundacion, dia_fundacion)
+                except ValueError:
+                    print('\nNo es una fecha válida.')
+                    continue
+
+                biblioteca.sp_insertar_modificar_editorial(
+                    id_editorial, nombre, correo, telefono, fecha_fundacion)
+
+                print(
+                    '\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
 
             # Libro
             elif opcion_añadir_modificar == '3':
                 id_libro = input('\nId libro:             ')
-                id_editorial = input('Id editorial:         ')
-                titulo = input('Título:               ')
-                fecha_publicacion = input('Fecha de publicación: ')
-                biblioteca.sp_insertar_modificar_libro(id_libro, id_editorial, titulo, fecha_publicacion)
+                try:
+                    id_libro = int(id_libro)
+                    if id_libro <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl id debe ser un número positivo.')
+                    continue
 
-                print('\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
+                id_editorial = input('Id editorial:         ')
+                try:
+                    id_editorial = int(id_editorial)
+                    if id_editorial <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl id debe ser un número positivo.')
+                    continue
+
+                titulo = input('Título:               ')
+                try:
+                    if len(titulo) > 60:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl título no puede ser de más de 60 carácteres.')
+
+                año_publicacion = input('Año publicacion: ')
+                try:
+                    año_publicacion = int(año_publicacion)
+                    if año_publicacion <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl año debe ser un número positivo.')
+                    continue
+
+                mes_publicacion = input('Mes publicacion: ')
+                try:
+                    mes_publicacion = int(mes_publicacion)
+                    if mes_publicacion > 12 or mes_publicacion < 1:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl mes debe ser un número entre 1 y 12.')
+                    continue
+
+                dia_publicacion = input('Día publicacion: ')
+                try:
+                    dia_publicacion = int(dia_publicacion)
+                    if dia_publicacion > 31 or dia_publicacion < 1:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl día debe ser un número entre 1 y 31.')
+                    continue
+
+                try:
+                    fecha_publicacion = datetime.datetime(
+                        año_publicacion, mes_publicacion, dia_publicacion)
+                except ValueError:
+                    print('\nNo es una fecha válida.')
+                    continue
+
+                biblioteca.sp_insertar_modificar_libro(
+                    id_libro, id_editorial, titulo, fecha_publicacion)
+
+                print(
+                    '\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
 
             # Usuario
             elif opcion_añadir_modificar == '4':
                 id_usuario = input('\nId usuario:      ')
-                nombre = input('Nombre:          ')
-                apellido =  input('Apellido:        ')
-                id_tipo_usuario = input('Id tipo usuario: ')
-                biblioteca.sp_insertar_modificar_usuario(id_usuario, nombre, apellido, id_tipo_usuario)
+                try:
+                    id_usuario = int(id_usuario)
+                    if id_usuario <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl id debe ser un número positivo.')
+                    continue
 
-                print('\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
+                nombre = input('Nombre:          ')
+                try:
+                    if len(nombre) > 30:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl nombre no puede ser más largo de 30 carácteres.')
+                    continue
+
+                apellido = input('Apellido:        ')
+                try:
+                    if len(apellido) > 30:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl apellido no puede ser más largo de 30 carácteres.')
+                    continue
+
+                id_tipo_usuario = input('Id tipo usuario: ')
+                try:
+                    id_tipo_usuario = int(id_tipo_usuario)
+                    if id_tipo_usuario <= 0:
+                        raise ValueError
+                except ValueError:
+                    print('\nEl id debe ser un número positivo.')
+                    continue
+
+                biblioteca.sp_insertar_modificar_usuario(
+                    id_usuario, nombre, apellido, id_tipo_usuario)
+
+                print(
+                    '\n', ' Fin submenú añadir/modificar registros '.center(70, '='), sep='')
 
             else:
                 print('\nOpción no válida.')
@@ -217,7 +428,7 @@ def main():
             break
 
         else:
-            print('\n\nOpción no válida.')
+            print('\nOpción no válida.')
 
 
 def menu():
@@ -231,6 +442,7 @@ def menu():
     print('7 - Listar registros')
     print('8 - Guardar los cambios')
     print('9 - Salir')
+
 
 def menu_registros():
     print('\n1  - Libros')
@@ -246,11 +458,13 @@ def menu_registros():
     print('11 - Plazos extra')
     print('12 - Tipos de usuario')
 
+
 def menu_añadir_modificar():
     print('\n1  - Autores')
     print('2  - Editoriales')
     print('3  - Libros')
     print('4  - Usuarios')
+
 
 if __name__ == '__main__':
     main()
